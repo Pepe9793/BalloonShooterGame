@@ -5,6 +5,8 @@ public class Shooting : MonoBehaviour
     public Camera cam; // Assign the main camera in the inspector
     public BalloonSpawner balloonSpawner; // Reference to the BalloonSpawner for releasing balloons
     public AudioClip popSound; // Assign the pop sound effect in the inspector
+    public ParticleSystem popEffect; // Assign the particle effect prefab in the inspector
+
     private AudioSource audioSource; // Audio source to play sound effects
 
     private void Start()
@@ -25,6 +27,11 @@ public class Shooting : MonoBehaviour
         if (popSound == null)
         {
             Debug.LogWarning("Pop sound is not assigned in the inspector!");
+        }
+
+        if (popEffect == null)
+        {
+            Debug.LogWarning("Pop particle effect is not assigned in the inspector!");
         }
     }
 
@@ -73,6 +80,17 @@ public class Shooting : MonoBehaviour
         if (popSound != null)
         {
             audioSource.PlayOneShot(popSound); // Play the pop sound effect
+        }
+
+        // Play the particle effect
+        if (popEffect != null)
+        {
+            // Instantiate the particle effect at the balloon's position
+            ParticleSystem effect = Instantiate(popEffect, balloon.transform.position, Quaternion.identity);
+            effect.Play();
+
+            // Destroy the particle system after it finishes
+            Destroy(effect.gameObject, effect.main.duration);
         }
 
         // Update score when the balloon is popped
